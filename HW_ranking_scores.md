@@ -1,3 +1,15 @@
+Sustainable Society 2026 – HW peer ranking → scores
+================
+
+- [1. Rank-to-score function](#1-rank-to-score-function)
+- [2. Read data from GitHub](#2-read-data-from-github)
+- [3. Reshape and drop each rater’s own
+  group](#3-reshape-and-drop-each-raters-own-group)
+- [4. Scores per group](#4-scores-per-group)
+- [5. Ranks on the logit curve](#5-ranks-on-the-logit-curve)
+- [6. Spread of individual scores](#6-spread-of-individual-scores)
+- [7. Final scores](#7-final-scores)
+
 ``` r
 pkgs <- c("readr", "dplyr", "tidyr", "stringr", "ggplot2", "ggrepel", "knitr")
 missing <- pkgs[!vapply(pkgs, requireNamespace, logical(1), quietly = TRUE)]
@@ -92,7 +104,7 @@ kable(self_rank, caption = "Raters who ranked their own group #1 (ignored in sco
 | Content    |         1 |     11 |
 | Likability |         1 |      9 |
 
-Raters who ranked their own group #1 (ignored in scoring)
+Raters who ranked their own group \#1 (ignored in scoring)
 
 ``` r
 # Remove own group, then (optionally) re-rank the remaining groups 1..N-1
@@ -142,7 +154,7 @@ kable(group_scores, digits = 1,
 ```
 
 | Group | Raters | Content | Likability | Weighted (70/30) |
-|:------------------------------------|-----:|------:|--------:|-------------:|
+|:---|---:|---:|---:|---:|
 | Goal framing theory | 51 | 88.5 | 94.5 | 90.3 |
 | Norm Activation Model | 50 | 88.3 | 87.8 | 88.2 |
 | ABC Model | 50 | 87.9 | 88.2 | 88.0 |
@@ -191,7 +203,7 @@ ggplot() +
   theme(legend.position = "none")
 ```
 
-![](HW_ranking_scores_files/figure-markdown_github/curve-1.png)
+![](HW_ranking_scores_files/figure-gfm/curve-1.png)<!-- -->
 
 ## 6. Spread of individual scores
 
@@ -204,7 +216,7 @@ ggplot(ratings, aes(score, reorder(group, score), fill = dimension)) +
   theme(legend.position = "top")
 ```
 
-![](HW_ranking_scores_files/figure-markdown_github/spread-1.png)
+![](HW_ranking_scores_files/figure-gfm/spread-1.png)<!-- -->
 
 ## 7. Final scores
 
@@ -221,4 +233,4 @@ group_scores %>%
   theme(legend.position = "top")
 ```
 
-![](HW_ranking_scores_files/figure-markdown_github/final-1.png)
+![](HW_ranking_scores_files/figure-gfm/final-1.png)<!-- -->
