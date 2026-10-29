@@ -1,0 +1,205 @@
+---
+title: "Sustainable Society 2026 – HW peer ranking → scores"
+output:
+  pdf_document:
+    toc: true
+  html_document:
+    toc: true
+    toc_float: true
+    code_folding: show
+params:
+  data_url: "https://raw.githubusercontent.com/janurban/sustSoc/refs/heads/main/Grading%20Sust%20soc%202026%20-%20HW_ranking.csv"
+  rerank_after_drop: true
+  w_content: 0.7
+  output_csv: HW_ranking_scores.csv
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE,
+                      fig.width = 10, fig.height = 6)
+```
+
+```{r packages}
+pkgs <- c("readr", "dplyr", "tidyr", "stringr", "ggplot2", "ggrepel", "knitr")
+missing <- pkgs[!vapply(pkgs, requireNamespace, logical(1), quietly = TRUE)]
+if (length(missing)) install.packages(missing)
+
+library(readr)
+library(dplyr)
+library(tidyr)
+library(stringr)
+library(ggplot2)
+library(ggrepel)
+library(knitr)
+```
+
+## 1. Rank-to-score function
+
+```{r function}
+# 1. Create a function for the logit-to-range transformation
+map_rank_to_logit_score <- function(ranks, N = 12) {
+  # Convert rank to an adjusted fractional probability (Hazen correction)
+  p <- (ranks - 0.5) / N
+
+  # Invert so Rank 1 gets the highest probability
+  p_inverted <- 1 - p
+
+  # Apply logit transformation: ln(p / (1 - p))
+  logits <- log(p_inverted / (1 - p_inverted))
+
+  # Calculate absolute min/max limits for a perfect rank 1 to 12 set
+  ideal_p <- (c(1, N) - 0.5) / N
+  ideal_logits <- log((1 - ideal_p) / (1 - (1 - ideal_p)))
+  logit_min <- min(ideal_logits)
+  logit_max <- max(ideal_logits)
+
+  # Scale linearly to the 70-100 range
+  scores <- 70 + 30 * (logits - logit_min) / (logit_max - logit_min)
+  return(scores)
+}
+```
+
+## 2. Read data from GitHub
+
+```{r read}
+raw <- read_csv(params$data_url, show_col_types = FALSE)
+
+# Shorten LimeSurvey headers: "rankContent[1]. Please order ..." -> "rankContent[1]"
+names(raw) <- sub("\\.\\s.*$", "", names(raw))
+
+# Keep only completed responses (incomplete ones have no ownGroup)
+responses <- raw %>%
+  filter(!is.na(ownGroup)) %>%
+  mutate(ownGroup = str_trim(ownGroup))
+
+cat("Completed responses:", nrow(responses), "\n")
+```
+
+## 3. Reshape and drop each rater's own group
+
+```{r reshape}
+long <- responses %>%
+  select(id, ownGroup,
+         starts_with("rankContent["), starts_with("rankLikability[")) %>%
+  pivot_longer(
+    cols          = -c(id, ownGroup),
+    names_to      = c("dimension", "rank_orig"),
+    names_pattern = "rank(Content|Likability)\\[(\\d+)\\]",
+    values_to     = "group"
+  ) %>%
+  mutate(rank_orig = as.integer(rank_orig),
+         group     = str_trim(group)) %>%
+  filter(!is.na(group))
+
+N_GROUPS <- n_distinct(long$group)
+cat("Groups ranked:", N_GROUPS, "\n")
+
+# How often did raters put their own group first? (just for information)
+self_rank <- long %>%
+  filter(group == ownGroup) %>%
+  count(dimension, rank_orig, name = "raters") %>%
+  filter(rank_orig == 1)
+kable(self_rank, caption = "Raters who ranked their own group #1 (ignored in scoring)")
+
+# Remove own group, then (optionally) re-rank the remaining groups 1..N-1
+ratings <- long %>%
+  filter(group != ownGroup) %>%
+  group_by(id, dimension) %>%
+  arrange(rank_orig, .by_group = TRUE) %>%
+  mutate(
+    rank = if (params$rerank_after_drop) row_number() else rank_orig,
+    N    = if (params$rerank_after_drop) n()          else N_GROUPS,
+    score = map_rank_to_logit_score(rank, N = first(N))
+  ) %>%
+  ungroup()
+
+N_SCALE <- if (params$rerank_after_drop) N_GROUPS - 1 else N_GROUPS
+```
+
+## 4. Scores per group
+
+Each rater's rank is converted to a 70–100 score, then scores are averaged across raters.
+
+```{r scores}
+w_c <- params$w_content
+w_l <- 1 - w_c
+
+group_dim <- ratings %>%
+  group_by(group, dimension) %>%
+  summarise(raters    = n(),
+            mean_rank = mean(rank),
+            sd_score  = sd(score),
+            score     = mean(score),
+            .groups   = "drop")
+
+group_scores <- group_dim %>%
+  select(group, dimension, score) %>%
+  pivot_wider(names_from = dimension, values_from = score) %>%
+  left_join(group_dim %>% filter(dimension == "Content") %>%
+              select(group, raters), by = "group") %>%
+  mutate(Weighted = w_c * Content + w_l * Likability) %>%
+  arrange(desc(Weighted)) %>%
+  select(group, raters, Content, Likability, Weighted)
+
+kable(group_scores, digits = 1,
+      col.names = c("Group", "Raters", "Content", "Likability",
+                    sprintf("Weighted (%d/%d)", round(100 * w_c), round(100 * w_l))))
+
+write_csv(group_scores %>% mutate(across(where(is.numeric), ~ round(.x, 2))),
+          params$output_csv)
+```
+
+## 5. Ranks on the logit curve
+
+The line shows the rank → score mapping. Grey dots are the scores available for each rank; coloured
+points are each group's average rank and average score. Averages fall slightly off the curve because
+the mean of the scores is not the score at the mean rank.
+
+```{r curve, fig.height = 7}
+curve_df <- tibble(rank = seq(1, N_SCALE, length.out = 300)) %>%
+  mutate(score = map_rank_to_logit_score(rank, N = N_SCALE))
+
+step_df <- tibble(rank = 1:N_SCALE) %>%
+  mutate(score = map_rank_to_logit_score(rank, N = N_SCALE))
+
+ggplot() +
+  geom_line(data = curve_df, aes(rank, score), linewidth = 1, colour = "grey40") +
+  geom_point(data = step_df, aes(rank, score), colour = "grey60", size = 2) +
+  geom_point(data = group_dim, aes(mean_rank, score, colour = group), size = 3.5) +
+  geom_text_repel(data = group_dim, aes(mean_rank, score, label = group, colour = group),
+                  size = 3, max.overlaps = Inf, show.legend = FALSE, seed = 1) +
+  facet_wrap(~ dimension) +
+  scale_x_continuous(breaks = 1:N_SCALE) +
+  scale_y_continuous(limits = c(70, 100)) +
+  labs(x = "Rank (1 = best)", y = "Score",
+       title = "Peer ranks mapped to scores on the logit curve",
+       subtitle = sprintf("Own group excluded; N = %d ranks per rater", N_SCALE)) +
+  theme_minimal(base_size = 12) +
+  theme(legend.position = "none")
+```
+
+## 6. Spread of individual scores
+
+```{r spread, fig.height = 7}
+ggplot(ratings, aes(score, reorder(group, score), fill = dimension)) +
+  geom_boxplot(alpha = 0.6, outlier.size = 1) +
+  labs(x = "Score from individual raters", y = NULL, fill = NULL,
+       title = "Distribution of scores per group") +
+  theme_minimal(base_size = 12) +
+  theme(legend.position = "top")
+```
+
+## 7. Final scores
+
+```{r final, fig.height = 6}
+group_scores %>%
+  pivot_longer(c(Content, Likability, Weighted), names_to = "measure", values_to = "score") %>%
+  ggplot(aes(score, reorder(group, score * (measure == "Weighted")), colour = measure)) +
+  geom_point(aes(size = measure == "Weighted")) +
+  scale_size_manual(values = c(2.5, 4.5), guide = "none") +
+  labs(x = "Score", y = NULL, colour = NULL,
+       title = sprintf("Content, likability and weighted score (%d%% / %d%%)",
+                       round(100 * w_c), round(100 * w_l))) +
+  theme_minimal(base_size = 12) +
+  theme(legend.position = "top")
+```

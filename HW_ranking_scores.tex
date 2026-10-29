@@ -1,0 +1,413 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\documentclass[
+]{article}
+\usepackage{xcolor}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{longtable,booktabs,array}
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\usepackage{graphicx}
+\makeatletter
+\newsavebox\pandoc@box
+\newcommand*\pandocbounded[1]{% scales image to fit in text height/width
+  \sbox\pandoc@box{#1}%
+  \Gscale@div\@tempa{\textheight}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
+  \Gscale@div\@tempb{\linewidth}{\wd\pandoc@box}%
+  \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi% select the smaller of both
+  \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
+  \else\usebox{\pandoc@box}%
+  \fi%
+}
+% Set default figure placement to htbp
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  pdftitle={Sustainable Society 2026 -- HW peer ranking → scores},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\title{Sustainable Society 2026 -- HW peer ranking → scores}
+\author{}
+\date{\vspace{-2.5em}}
+
+\begin{document}
+\maketitle
+
+{
+\setcounter{tocdepth}{2}
+\tableofcontents
+}
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{pkgs }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"readr"}\NormalTok{, }\StringTok{"dplyr"}\NormalTok{, }\StringTok{"tidyr"}\NormalTok{, }\StringTok{"stringr"}\NormalTok{, }\StringTok{"ggplot2"}\NormalTok{, }\StringTok{"ggrepel"}\NormalTok{, }\StringTok{"knitr"}\NormalTok{)}
+\NormalTok{missing }\OtherTok{\textless{}{-}}\NormalTok{ pkgs[}\SpecialCharTok{!}\FunctionTok{vapply}\NormalTok{(pkgs, requireNamespace, }\FunctionTok{logical}\NormalTok{(}\DecValTok{1}\NormalTok{), }\AttributeTok{quietly =} \ConstantTok{TRUE}\NormalTok{)]}
+\ControlFlowTok{if}\NormalTok{ (}\FunctionTok{length}\NormalTok{(missing)) }\FunctionTok{install.packages}\NormalTok{(missing)}
+
+\FunctionTok{library}\NormalTok{(readr)}
+\FunctionTok{library}\NormalTok{(dplyr)}
+\FunctionTok{library}\NormalTok{(tidyr)}
+\FunctionTok{library}\NormalTok{(stringr)}
+\FunctionTok{library}\NormalTok{(ggplot2)}
+\FunctionTok{library}\NormalTok{(ggrepel)}
+\FunctionTok{library}\NormalTok{(knitr)}
+\end{Highlighting}
+\end{Shaded}
+
+\subsection{1. Rank-to-score function}\label{rank-to-score-function}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# 1. Create a function for the logit{-}to{-}range transformation}
+\NormalTok{map\_rank\_to\_logit\_score }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(ranks, }\AttributeTok{N =} \DecValTok{12}\NormalTok{) \{}
+  \CommentTok{\# Convert rank to an adjusted fractional probability (Hazen correction)}
+\NormalTok{  p }\OtherTok{\textless{}{-}}\NormalTok{ (ranks }\SpecialCharTok{{-}} \FloatTok{0.5}\NormalTok{) }\SpecialCharTok{/}\NormalTok{ N}
+
+  \CommentTok{\# Invert so Rank 1 gets the highest probability}
+\NormalTok{  p\_inverted }\OtherTok{\textless{}{-}} \DecValTok{1} \SpecialCharTok{{-}}\NormalTok{ p}
+
+  \CommentTok{\# Apply logit transformation: ln(p / (1 {-} p))}
+\NormalTok{  logits }\OtherTok{\textless{}{-}} \FunctionTok{log}\NormalTok{(p\_inverted }\SpecialCharTok{/}\NormalTok{ (}\DecValTok{1} \SpecialCharTok{{-}}\NormalTok{ p\_inverted))}
+
+  \CommentTok{\# Calculate absolute min/max limits for a perfect rank 1 to 12 set}
+\NormalTok{  ideal\_p }\OtherTok{\textless{}{-}}\NormalTok{ (}\FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, N) }\SpecialCharTok{{-}} \FloatTok{0.5}\NormalTok{) }\SpecialCharTok{/}\NormalTok{ N}
+\NormalTok{  ideal\_logits }\OtherTok{\textless{}{-}} \FunctionTok{log}\NormalTok{((}\DecValTok{1} \SpecialCharTok{{-}}\NormalTok{ ideal\_p) }\SpecialCharTok{/}\NormalTok{ (}\DecValTok{1} \SpecialCharTok{{-}}\NormalTok{ (}\DecValTok{1} \SpecialCharTok{{-}}\NormalTok{ ideal\_p)))}
+\NormalTok{  logit\_min }\OtherTok{\textless{}{-}} \FunctionTok{min}\NormalTok{(ideal\_logits)}
+\NormalTok{  logit\_max }\OtherTok{\textless{}{-}} \FunctionTok{max}\NormalTok{(ideal\_logits)}
+
+  \CommentTok{\# Scale linearly to the 70{-}100 range}
+\NormalTok{  scores }\OtherTok{\textless{}{-}} \DecValTok{70} \SpecialCharTok{+} \DecValTok{30} \SpecialCharTok{*}\NormalTok{ (logits }\SpecialCharTok{{-}}\NormalTok{ logit\_min) }\SpecialCharTok{/}\NormalTok{ (logit\_max }\SpecialCharTok{{-}}\NormalTok{ logit\_min)}
+  \FunctionTok{return}\NormalTok{(scores)}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\subsection{2. Read data from GitHub}\label{read-data-from-github}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{raw }\OtherTok{\textless{}{-}} \FunctionTok{read\_csv}\NormalTok{(params}\SpecialCharTok{$}\NormalTok{data\_url, }\AttributeTok{show\_col\_types =} \ConstantTok{FALSE}\NormalTok{)}
+
+\CommentTok{\# Shorten LimeSurvey headers: "rankContent[1]. Please order ..." {-}\textgreater{} "rankContent[1]"}
+\FunctionTok{names}\NormalTok{(raw) }\OtherTok{\textless{}{-}} \FunctionTok{sub}\NormalTok{(}\StringTok{"}\SpecialCharTok{\textbackslash{}\textbackslash{}}\StringTok{.}\SpecialCharTok{\textbackslash{}\textbackslash{}}\StringTok{s.*$"}\NormalTok{, }\StringTok{""}\NormalTok{, }\FunctionTok{names}\NormalTok{(raw))}
+
+\CommentTok{\# Keep only completed responses (incomplete ones have no ownGroup)}
+\NormalTok{responses }\OtherTok{\textless{}{-}}\NormalTok{ raw }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{filter}\NormalTok{(}\SpecialCharTok{!}\FunctionTok{is.na}\NormalTok{(ownGroup)) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{ownGroup =} \FunctionTok{str\_trim}\NormalTok{(ownGroup))}
+
+\FunctionTok{cat}\NormalTok{(}\StringTok{"Completed responses:"}\NormalTok{, }\FunctionTok{nrow}\NormalTok{(responses), }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Completed responses: 55
+\end{verbatim}
+
+\subsection{3. Reshape and drop each rater's own
+group}\label{reshape-and-drop-each-raters-own-group}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{long }\OtherTok{\textless{}{-}}\NormalTok{ responses }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{select}\NormalTok{(id, ownGroup,}
+         \FunctionTok{starts\_with}\NormalTok{(}\StringTok{"rankContent["}\NormalTok{), }\FunctionTok{starts\_with}\NormalTok{(}\StringTok{"rankLikability["}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{pivot\_longer}\NormalTok{(}
+    \AttributeTok{cols          =} \SpecialCharTok{{-}}\FunctionTok{c}\NormalTok{(id, ownGroup),}
+    \AttributeTok{names\_to      =} \FunctionTok{c}\NormalTok{(}\StringTok{"dimension"}\NormalTok{, }\StringTok{"rank\_orig"}\NormalTok{),}
+    \AttributeTok{names\_pattern =} \StringTok{"rank(Content|Likability)}\SpecialCharTok{\textbackslash{}\textbackslash{}}\StringTok{[(}\SpecialCharTok{\textbackslash{}\textbackslash{}}\StringTok{d+)}\SpecialCharTok{\textbackslash{}\textbackslash{}}\StringTok{]"}\NormalTok{,}
+    \AttributeTok{values\_to     =} \StringTok{"group"}
+\NormalTok{  ) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{rank\_orig =} \FunctionTok{as.integer}\NormalTok{(rank\_orig),}
+         \AttributeTok{group     =} \FunctionTok{str\_trim}\NormalTok{(group)) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{filter}\NormalTok{(}\SpecialCharTok{!}\FunctionTok{is.na}\NormalTok{(group))}
+
+\NormalTok{N\_GROUPS }\OtherTok{\textless{}{-}} \FunctionTok{n\_distinct}\NormalTok{(long}\SpecialCharTok{$}\NormalTok{group)}
+\FunctionTok{cat}\NormalTok{(}\StringTok{"Groups ranked:"}\NormalTok{, N\_GROUPS, }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Groups ranked: 12
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# How often did raters put their own group first? (just for information)}
+\NormalTok{self\_rank }\OtherTok{\textless{}{-}}\NormalTok{ long }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{filter}\NormalTok{(group }\SpecialCharTok{==}\NormalTok{ ownGroup) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{count}\NormalTok{(dimension, rank\_orig, }\AttributeTok{name =} \StringTok{"raters"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{filter}\NormalTok{(rank\_orig }\SpecialCharTok{==} \DecValTok{1}\NormalTok{)}
+\FunctionTok{kable}\NormalTok{(self\_rank, }\AttributeTok{caption =} \StringTok{"Raters who ranked their own group \#1 (ignored in scoring)"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[]{@{}lrr@{}}
+\caption{Raters who ranked their own group \#1 (ignored in
+scoring)}\tabularnewline
+\toprule\noalign{}
+dimension & rank\_orig & raters \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+dimension & rank\_orig & raters \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Content & 1 & 11 \\
+Likability & 1 & 9 \\
+\end{longtable}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Remove own group, then (optionally) re{-}rank the remaining groups 1..N{-}1}
+\NormalTok{ratings }\OtherTok{\textless{}{-}}\NormalTok{ long }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{filter}\NormalTok{(group }\SpecialCharTok{!=}\NormalTok{ ownGroup) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{group\_by}\NormalTok{(id, dimension) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{arrange}\NormalTok{(rank\_orig, }\AttributeTok{.by\_group =} \ConstantTok{TRUE}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}
+    \AttributeTok{rank =} \ControlFlowTok{if}\NormalTok{ (params}\SpecialCharTok{$}\NormalTok{rerank\_after\_drop) }\FunctionTok{row\_number}\NormalTok{() }\ControlFlowTok{else}\NormalTok{ rank\_orig,}
+    \AttributeTok{N    =} \ControlFlowTok{if}\NormalTok{ (params}\SpecialCharTok{$}\NormalTok{rerank\_after\_drop) }\FunctionTok{n}\NormalTok{()          }\ControlFlowTok{else}\NormalTok{ N\_GROUPS,}
+    \AttributeTok{score =} \FunctionTok{map\_rank\_to\_logit\_score}\NormalTok{(rank, }\AttributeTok{N =} \FunctionTok{first}\NormalTok{(N))}
+\NormalTok{  ) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{ungroup}\NormalTok{()}
+
+\NormalTok{N\_SCALE }\OtherTok{\textless{}{-}} \ControlFlowTok{if}\NormalTok{ (params}\SpecialCharTok{$}\NormalTok{rerank\_after\_drop) N\_GROUPS }\SpecialCharTok{{-}} \DecValTok{1} \ControlFlowTok{else}\NormalTok{ N\_GROUPS}
+\end{Highlighting}
+\end{Shaded}
+
+\subsection{4. Scores per group}\label{scores-per-group}
+
+Each rater's rank is converted to a 70--100 score, then scores are
+averaged across raters.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{w\_c }\OtherTok{\textless{}{-}}\NormalTok{ params}\SpecialCharTok{$}\NormalTok{w\_content}
+\NormalTok{w\_l }\OtherTok{\textless{}{-}} \DecValTok{1} \SpecialCharTok{{-}}\NormalTok{ w\_c}
+
+\NormalTok{group\_dim }\OtherTok{\textless{}{-}}\NormalTok{ ratings }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{group\_by}\NormalTok{(group, dimension) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{summarise}\NormalTok{(}\AttributeTok{raters    =} \FunctionTok{n}\NormalTok{(),}
+            \AttributeTok{mean\_rank =} \FunctionTok{mean}\NormalTok{(rank),}
+            \AttributeTok{sd\_score  =} \FunctionTok{sd}\NormalTok{(score),}
+            \AttributeTok{score     =} \FunctionTok{mean}\NormalTok{(score),}
+            \AttributeTok{.groups   =} \StringTok{"drop"}\NormalTok{)}
+
+\NormalTok{group\_scores }\OtherTok{\textless{}{-}}\NormalTok{ group\_dim }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{select}\NormalTok{(group, dimension, score) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{pivot\_wider}\NormalTok{(}\AttributeTok{names\_from =}\NormalTok{ dimension, }\AttributeTok{values\_from =}\NormalTok{ score) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{left\_join}\NormalTok{(group\_dim }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{filter}\NormalTok{(dimension }\SpecialCharTok{==} \StringTok{"Content"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+              \FunctionTok{select}\NormalTok{(group, raters), }\AttributeTok{by =} \StringTok{"group"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{Weighted =}\NormalTok{ w\_c }\SpecialCharTok{*}\NormalTok{ Content }\SpecialCharTok{+}\NormalTok{ w\_l }\SpecialCharTok{*}\NormalTok{ Likability) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{arrange}\NormalTok{(}\FunctionTok{desc}\NormalTok{(Weighted)) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{select}\NormalTok{(group, raters, Content, Likability, Weighted)}
+
+\FunctionTok{kable}\NormalTok{(group\_scores, }\AttributeTok{digits =} \DecValTok{1}\NormalTok{,}
+      \AttributeTok{col.names =} \FunctionTok{c}\NormalTok{(}\StringTok{"Group"}\NormalTok{, }\StringTok{"Raters"}\NormalTok{, }\StringTok{"Content"}\NormalTok{, }\StringTok{"Likability"}\NormalTok{,}
+                    \FunctionTok{sprintf}\NormalTok{(}\StringTok{"Weighted (\%d/\%d)"}\NormalTok{, }\FunctionTok{round}\NormalTok{(}\DecValTok{100} \SpecialCharTok{*}\NormalTok{ w\_c), }\FunctionTok{round}\NormalTok{(}\DecValTok{100} \SpecialCharTok{*}\NormalTok{ w\_l))))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.5376}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.0753}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.0860}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.1183}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.1828}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Group
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Raters
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Content
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Likability
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Weighted (70/30)
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Goal framing theory & 51 & 88.5 & 94.5 & 90.3 \\
+Norm Activation Model & 50 & 88.3 & 87.8 & 88.2 \\
+ABC Model & 50 & 87.9 & 88.2 & 88.0 \\
+Value-Belief-Norm (VBN) Theory & 49 & 88.5 & 85.5 & 87.6 \\
+Comprehensive Action Determination Model (CADM) & 50 & 87.6 & 83.9 &
+86.5 \\
+Protection Motivation Theory (PMT) & 52 & 84.9 & 85.9 & 85.2 \\
+Social practice theory & 52 & 83.0 & 85.2 & 83.6 \\
+Mind-Behavior Gap Framework & 52 & 82.2 & 85.6 & 83.2 \\
+Costly Signaling Theory (CST) & 47 & 83.3 & 82.9 & 83.2 \\
+Theory of Planned Behavior (TPB) & 50 & 83.2 & 80.2 & 82.3 \\
+Social Identity theory and Environmental Identity & 51 & 81.4 & 80.3 &
+81.0 \\
+Dual Process / Nudge Theory & 51 & 81.4 & 79.9 & 81.0 \\
+\end{longtable}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{write\_csv}\NormalTok{(group\_scores }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{mutate}\NormalTok{(}\FunctionTok{across}\NormalTok{(}\FunctionTok{where}\NormalTok{(is.numeric), }\SpecialCharTok{\textasciitilde{}} \FunctionTok{round}\NormalTok{(.x, }\DecValTok{2}\NormalTok{))),}
+\NormalTok{          params}\SpecialCharTok{$}\NormalTok{output\_csv)}
+\end{Highlighting}
+\end{Shaded}
+
+\subsection{5. Ranks on the logit curve}\label{ranks-on-the-logit-curve}
+
+The line shows the rank → score mapping. Grey dots are the scores
+available for each rank; coloured points are each group's average rank
+and average score. Averages fall slightly off the curve because the mean
+of the scores is not the score at the mean rank.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{curve\_df }\OtherTok{\textless{}{-}} \FunctionTok{tibble}\NormalTok{(}\AttributeTok{rank =} \FunctionTok{seq}\NormalTok{(}\DecValTok{1}\NormalTok{, N\_SCALE, }\AttributeTok{length.out =} \DecValTok{300}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{score =} \FunctionTok{map\_rank\_to\_logit\_score}\NormalTok{(rank, }\AttributeTok{N =}\NormalTok{ N\_SCALE))}
+
+\NormalTok{step\_df }\OtherTok{\textless{}{-}} \FunctionTok{tibble}\NormalTok{(}\AttributeTok{rank =} \DecValTok{1}\SpecialCharTok{:}\NormalTok{N\_SCALE) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{score =} \FunctionTok{map\_rank\_to\_logit\_score}\NormalTok{(rank, }\AttributeTok{N =}\NormalTok{ N\_SCALE))}
+
+\FunctionTok{ggplot}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{geom\_line}\NormalTok{(}\AttributeTok{data =}\NormalTok{ curve\_df, }\FunctionTok{aes}\NormalTok{(rank, score), }\AttributeTok{linewidth =} \DecValTok{1}\NormalTok{, }\AttributeTok{colour =} \StringTok{"grey40"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{geom\_point}\NormalTok{(}\AttributeTok{data =}\NormalTok{ step\_df, }\FunctionTok{aes}\NormalTok{(rank, score), }\AttributeTok{colour =} \StringTok{"grey60"}\NormalTok{, }\AttributeTok{size =} \DecValTok{2}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{geom\_point}\NormalTok{(}\AttributeTok{data =}\NormalTok{ group\_dim, }\FunctionTok{aes}\NormalTok{(mean\_rank, score, }\AttributeTok{colour =}\NormalTok{ group), }\AttributeTok{size =} \FloatTok{3.5}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{geom\_text\_repel}\NormalTok{(}\AttributeTok{data =}\NormalTok{ group\_dim, }\FunctionTok{aes}\NormalTok{(mean\_rank, score, }\AttributeTok{label =}\NormalTok{ group, }\AttributeTok{colour =}\NormalTok{ group),}
+                  \AttributeTok{size =} \DecValTok{3}\NormalTok{, }\AttributeTok{max.overlaps =} \ConstantTok{Inf}\NormalTok{, }\AttributeTok{show.legend =} \ConstantTok{FALSE}\NormalTok{, }\AttributeTok{seed =} \DecValTok{1}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{facet\_wrap}\NormalTok{(}\SpecialCharTok{\textasciitilde{}}\NormalTok{ dimension) }\SpecialCharTok{+}
+  \FunctionTok{scale\_x\_continuous}\NormalTok{(}\AttributeTok{breaks =} \DecValTok{1}\SpecialCharTok{:}\NormalTok{N\_SCALE) }\SpecialCharTok{+}
+  \FunctionTok{scale\_y\_continuous}\NormalTok{(}\AttributeTok{limits =} \FunctionTok{c}\NormalTok{(}\DecValTok{70}\NormalTok{, }\DecValTok{100}\NormalTok{)) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{x =} \StringTok{"Rank (1 = best)"}\NormalTok{, }\AttributeTok{y =} \StringTok{"Score"}\NormalTok{,}
+       \AttributeTok{title =} \StringTok{"Peer ranks mapped to scores on the logit curve"}\NormalTok{,}
+       \AttributeTok{subtitle =} \FunctionTok{sprintf}\NormalTok{(}\StringTok{"Own group excluded; N = \%d ranks per rater"}\NormalTok{, N\_SCALE)) }\SpecialCharTok{+}
+  \FunctionTok{theme\_minimal}\NormalTok{(}\AttributeTok{base\_size =} \DecValTok{12}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme}\NormalTok{(}\AttributeTok{legend.position =} \StringTok{"none"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\pandocbounded{\includegraphics[keepaspectratio]{HW_ranking_scores_files/HW_ranking_scores_files/figure-latex/curve-1.pdf}}
+
+\subsection{6. Spread of individual
+scores}\label{spread-of-individual-scores}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{ggplot}\NormalTok{(ratings, }\FunctionTok{aes}\NormalTok{(score, }\FunctionTok{reorder}\NormalTok{(group, score), }\AttributeTok{fill =}\NormalTok{ dimension)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_boxplot}\NormalTok{(}\AttributeTok{alpha =} \FloatTok{0.6}\NormalTok{, }\AttributeTok{outlier.size =} \DecValTok{1}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{x =} \StringTok{"Score from individual raters"}\NormalTok{, }\AttributeTok{y =} \ConstantTok{NULL}\NormalTok{, }\AttributeTok{fill =} \ConstantTok{NULL}\NormalTok{,}
+       \AttributeTok{title =} \StringTok{"Distribution of scores per group"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme\_minimal}\NormalTok{(}\AttributeTok{base\_size =} \DecValTok{12}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme}\NormalTok{(}\AttributeTok{legend.position =} \StringTok{"top"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\pandocbounded{\includegraphics[keepaspectratio]{HW_ranking_scores_files/HW_ranking_scores_files/figure-latex/spread-1.pdf}}
+
+\subsection{7. Final scores}\label{final-scores}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{group\_scores }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{pivot\_longer}\NormalTok{(}\FunctionTok{c}\NormalTok{(Content, Likability, Weighted), }\AttributeTok{names\_to =} \StringTok{"measure"}\NormalTok{, }\AttributeTok{values\_to =} \StringTok{"score"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{ggplot}\NormalTok{(}\FunctionTok{aes}\NormalTok{(score, }\FunctionTok{reorder}\NormalTok{(group, score }\SpecialCharTok{*}\NormalTok{ (measure }\SpecialCharTok{==} \StringTok{"Weighted"}\NormalTok{)), }\AttributeTok{colour =}\NormalTok{ measure)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_point}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{size =}\NormalTok{ measure }\SpecialCharTok{==} \StringTok{"Weighted"}\NormalTok{)) }\SpecialCharTok{+}
+  \FunctionTok{scale\_size\_manual}\NormalTok{(}\AttributeTok{values =} \FunctionTok{c}\NormalTok{(}\FloatTok{2.5}\NormalTok{, }\FloatTok{4.5}\NormalTok{), }\AttributeTok{guide =} \StringTok{"none"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{x =} \StringTok{"Score"}\NormalTok{, }\AttributeTok{y =} \ConstantTok{NULL}\NormalTok{, }\AttributeTok{colour =} \ConstantTok{NULL}\NormalTok{,}
+       \AttributeTok{title =} \FunctionTok{sprintf}\NormalTok{(}\StringTok{"Content, likability and weighted score (\%d\%\% / \%d\%\%)"}\NormalTok{,}
+                       \FunctionTok{round}\NormalTok{(}\DecValTok{100} \SpecialCharTok{*}\NormalTok{ w\_c), }\FunctionTok{round}\NormalTok{(}\DecValTok{100} \SpecialCharTok{*}\NormalTok{ w\_l))) }\SpecialCharTok{+}
+  \FunctionTok{theme\_minimal}\NormalTok{(}\AttributeTok{base\_size =} \DecValTok{12}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme}\NormalTok{(}\AttributeTok{legend.position =} \StringTok{"top"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\pandocbounded{\includegraphics[keepaspectratio]{HW_ranking_scores_files/HW_ranking_scores_files/figure-latex/final-1.pdf}}
+
+\end{document}
