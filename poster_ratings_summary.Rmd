@@ -1,0 +1,114 @@
+---
+title: "Poster ratings – group summary"
+date: "`r format(Sys.Date(), '%d %B %Y')`"
+output:
+  html_document:
+    keep_md: true        # also writes poster_ratings_summary.md (+ figure folder)
+    toc: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE,
+                      fig.width = 9, fig.height = 7, dpi = 150)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(knitr)
+```
+
+```{r config}
+# ---- CONFIG ----------------------------------------------------------------
+# Local copy is used if it sits next to this .Rmd, otherwise the GitHub version.
+data_file <- "poster_ratings.csv"
+data_url  <- "https://raw.githubusercontent.com/janurban/sustSoc/main/poster_ratings.csv"
+
+# Columns of the Google-Forms export (by position, because the headers are the
+# full question texts):
+#   1 Time | 2 Which poster are you rating now? | 3 convincing (1-10)
+#   4 clarity (1-10) | 5 comments
+group_col    <- 2
+score_cols   <- c(3, 4)
+score_labels <- c("Convincingness", "Clarity")
+# ----------------------------------------------------------------------------
+```
+
+```{r data}
+src <- if (file.exists(data_file)) data_file else data_url
+raw <- read.csv(src, stringsAsFactors = FALSE, check.names = FALSE,
+                encoding = "UTF-8")
+
+dat <- raw %>%
+  transmute(group = trimws(as.character(.data[[names(raw)[group_col]]])),
+            s1    = as.numeric(.data[[names(raw)[score_cols[1]]]]),
+            s2    = as.numeric(.data[[names(raw)[score_cols[2]]]])) %>%
+  filter(!is.na(group), group != "") %>%
+  mutate(total = rowMeans(cbind(s1, s2), na.rm = TRUE))   # total per rating = mean of the two scores
+```
+
+Data: `r nrow(dat)` ratings of `r n_distinct(dat$group)` posters.
+Scores: **Convincingness** (how convincing the argument is, incl. logical flow and factual correctness) and **Clarity** (how clearly the arguments are explained, incl. structure and visual layout), both on a 1–10 scale.
+The total score is the mean of the two scores; groups are sorted from best to worst by total (10 = best).
+
+```{r summary}
+summ <- dat %>%
+  group_by(group) %>%
+  summarise(n        = n(),
+            s1_mean  = mean(s1, na.rm = TRUE),    s1_sd    = sd(s1, na.rm = TRUE),
+            s2_mean  = mean(s2, na.rm = TRUE),    s2_sd    = sd(s2, na.rm = TRUE),
+            tot_mean = mean(total, na.rm = TRUE), tot_sd   = sd(total, na.rm = TRUE),
+            .groups = "drop") %>%
+  arrange(desc(tot_mean)) %>%
+  mutate(rank = row_number(), .before = 1)
+
+group_order <- summ$group
+```
+
+## Figure
+
+```{r figure}
+plot_df <- summ %>%
+  select(group, s1_mean, s1_sd, s2_mean, s2_sd, tot_mean, tot_sd) %>%
+  pivot_longer(-group,
+               names_to = c("measure", ".value"),
+               names_pattern = "(s1|s2|tot)_(mean|sd)") %>%
+  mutate(measure = factor(measure, levels = c("s1", "s2", "tot"),
+                          labels = c(score_labels, "Total (mean of both)")),
+         # best group at the top of the plot
+         group = factor(group, levels = rev(group_order)))
+
+ggplot(plot_df, aes(x = mean, y = group, colour = measure, shape = measure)) +
+  geom_errorbarh(aes(xmin = mean - sd, xmax = mean + sd),
+                 height = 0, linewidth = 0.6,
+                 position = position_dodge(width = 0.6)) +
+  geom_point(aes(size = measure), position = position_dodge(width = 0.6)) +
+  scale_size_manual(values = c(2.2, 2.2, 3.4)) +
+  scale_shape_manual(values = c(16, 17, 15)) +
+  scale_colour_manual(values = c("#4C78A8", "#F58518", "black")) +
+  labs(x = "Mean score (± SD), 10 = best", y = NULL, colour = NULL,
+       shape = NULL, size = NULL,
+       title = "Poster ratings",
+       subtitle = "Sorted from best (top) to worst (bottom) by total score") +
+  theme_minimal(base_size = 12) +
+  theme(legend.position = "top",
+        panel.grid.major.y = element_blank())
+```
+
+## Table
+
+```{r table}
+fmt <- function(m, s) sprintf("%.2f (%.2f)", m, s)
+
+summ %>%
+  transmute(Rank  = rank,
+            Poster = group,
+            N     = n,
+            !!paste0(score_labels[1], ", M (SD)") := fmt(s1_mean, s1_sd),
+            !!paste0(score_labels[2], ", M (SD)") := fmt(s2_mean, s2_sd),
+            `Total, M (SD)` = fmt(tot_mean, tot_sd)) %>%
+  kable(align = c("r", "l", "r", "r", "r", "r"))
+```
+
+```{r export, include=FALSE}
+# Also save the numeric summary as CSV next to the report
+write.csv(summ, "poster_ratings_group_summary.csv", row.names = FALSE)
+```
